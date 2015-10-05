@@ -6,7 +6,8 @@
 package hacker;
 
 import static java.lang.StrictMath.abs;
-import java.lang.reflect.Array;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -22,22 +23,10 @@ public class Hacker {
     public static void main(String[] args) {
         // TODO code application logic here
         //test(line());
-       int[] array = getInt(scan(), "1 2 3 4 5 6 6 54");
-       test(array[3]);
+        plusMinus();
+        //test(factorial(scan()));
     }
 
-    public static long sum() {
-
-        long sum = 0;
-        int counter = 0;
-        int pointer = scan();
-        while (counter < pointer) {
-            sum += scan(true);
-            counter++;
-        }
-
-        return sum;
-    }
 
     static int scan() {
         Scanner in = new Scanner(System.in);
@@ -54,40 +43,54 @@ public class Hacker {
         return in.nextLine();
     }
 
-    static int[] getInt(int i, String s) {
+    //Diagonal Difference (not complete)
+
+    static int[] getInt(int i, String s) { //gets input and concatinate them 
         String value = "";
-        int j = 0;
-        int [] array = new int[s.length()];
+        int[] array = new int[i];
         int counter = 0;
-        for (j = 0; j <= s.length(); j++) {
-            if (j < s.length() && s.charAt(j) != ' ' ) {
+        for (int j = 0; j <= s.length(); j++) {
+            test(j);
+            if (j < s.length() && s.charAt(j) != ' ') {
                 if (s.charAt(j + 1) == ' ') {
                     array[counter] = Integer.parseInt(String.valueOf(s.charAt(j)));;
-                    test(Integer.parseInt(String.valueOf(s.charAt(j))));
+                    //test(Integer.parseInt(String.valueOf(s.charAt(j))));
                     counter++;
-                }
-                else{
-                    array[counter]= Integer.parseInt(String.valueOf(s.charAt(j)+""+s.charAt(j+1)));
-                    test(Integer.parseInt(String.valueOf(s.charAt(j)+""+s.charAt(j+1))));
+                } else {
+                    array[counter] = Integer.parseInt(String.valueOf(s.charAt(j) + "" + s.charAt(j + 1)));
+                    //test(Integer.parseInt(String.valueOf(s.charAt(j) + "" + s.charAt(j + 1))));
                     j++;
                     counter++;
                 }
             }
-            
+
         }
-        
+
+        return array;
+    }
+    
+    static int[] copyArray(int pointer,int[] refarray, int[]array){
+        int counter = 0;
+        while (counter < pointer) {  //copy two arrays together
+            int ref = 0;
+            test(line());
+            refarray = getInt(pointer, line());
+            System.arraycopy(refarray,0,array, ref, pointer*counter+1);
+            counter++;
+        }
         return array;
     }
 
     public static int matrixSum() {
         int pointer = scan();
         int counter = 0;
-        
+
         int sum = 0;
         int sum1 = 0;
-
-        int[] array =  getInt(pointer, line());
-
+        int[] refarray = new int[pointer]; //refarray to be copied
+        int[] array = new int[pointer]; //final array
+        copyArray(pointer, refarray, array); //copy two arrays
+        
         int pos = 0; // position in the matrix
         counter = 1; // number of sums
         int jump = pointer + 1;  //next position jump
@@ -109,9 +112,46 @@ public class Hacker {
             counter++;
             //test(sum1);
         }
-
         return abs(sum1 - sum); //returns absolute value
+    }
 
+    //Plus minus
+
+    static void plusMinus(){
+        int pointer = scan();
+        int counter = 0;
+        int positives =0;
+        int negatives=0;
+        int zeros = 0;
+        while(counter < pointer){
+            int number = scan();
+            if(number>0){
+                positives++;}
+            if(number==0){
+                zeros++;
+            }
+            else if(number<0){
+                negatives++;
+            }
+            counter++;
+        }
+        double b = pointer;
+         test("positives "+positives/b +" Negatives "+negatives/b+" Zeros "+zeros/b);
+    }
+
+//Extra long Factorial
+
+    static BigInteger factorial(int n){
+       BigInteger factorial = new BigInteger(String.valueOf(1));
+        int x = n-1;
+        while(x >= 1){
+           factorial=factorial.multiply(new BigInteger(String.valueOf(n)));
+            factorial = factorial.multiply((new BigInteger(String.valueOf(x))));
+            n = n-2;
+            x = n-1;
+            test(factorial);
+       }
+        return factorial;
     }
 
     static void test(int s) {
@@ -125,4 +165,8 @@ public class Hacker {
     static void test(ArrayList s) {
         System.out.println("Test value: " + s);
     }
+
+    static void test(long s){System.out.println("Test value is: "+ s);}
+
+    static void test(BigInteger s){System.out.println("test value is: " + s);}
 }
