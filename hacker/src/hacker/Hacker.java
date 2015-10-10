@@ -112,8 +112,6 @@ public class Hacker {
         int number;
         int counter1 = 0;
         while(counter1 < pointer) {
-
-            //try {
                 array = getValue(s, counter);
                 number = Integer.parseInt(array[0]);
                 counter = Integer.parseInt(array[1]);
@@ -128,11 +126,7 @@ public class Hacker {
                     negatives++;
                 }
             counter1++;
-            /*} catch (IndexOutOfBoundsException e) {
-                test("IndexOutofBound");
-                break;
-            }*/
-
+         
         }
             float b = pointer;
         System.out.println();
