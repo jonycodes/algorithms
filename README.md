@@ -1,2 +1,2 @@
 # Algorithms
-Solving problems through algoritms
+Solving problems through algoritms with Java8
