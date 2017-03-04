@@ -23,6 +23,7 @@ class BinaryTree {
     }
     
     Node addNodeUtil(int s, Node tree){
+     
         if (tree == null){
             tree = new Node(s);
         }
@@ -32,13 +33,12 @@ class BinaryTree {
             tree.right = new Node(s);
         } else {
             if (tree.right.children < tree.left.children){
-                tree.right.children++;
                 addNodeUtil(s,  tree.right);
             } else {
-                tree.left.children++;
                 addNodeUtil(s, tree.left);
             }
         }
+        tree.children++;
         return tree;
     }
     void addNode(int s){
@@ -50,7 +50,7 @@ class BinaryTree {
         }
         else {
             inOrderTraversal(tree.left);
-            System.out.print(tree.data + " ");
+            System.out.print(tree.data + " children count: " + tree.children + "; \n");
             inOrderTraversal(tree.right);
         }
     }
