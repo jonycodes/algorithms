@@ -73,12 +73,10 @@ class Trie{
         char c = w.charAt(0);
         Node n = child.set.get(c);
         if (n == null) {
-            int counter = 0;
             if (c == '.'){
                 return child.set.values().stream().anyMatch(v -> {
                    return searchWordUtil(w.substring(1), v); 
-                });
-                
+                });      
             }
             return false; 
         }
