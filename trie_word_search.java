@@ -73,7 +73,6 @@ class Trie{
         char c = w.charAt(0);
         Node n = child.set.get(c);
         if (n == null) {
-            boolean f = false;
             int counter = 0;
             if (c == '.'){
                 return child.set.values().stream().anyMatch(v -> {
