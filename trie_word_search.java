@@ -9,37 +9,25 @@ import java.util.*;
         trie tree:
         Create a trie tree where every node is a character that points to the next character in the word then find the words that matches.
         http://www.geeksforgeeks.org/overview-of-data-structures-set-3-graph-trie-segment-tree-and-suffix-tree/#code10
-*/
-import java.io.*;
-import java.util.*;
-/*
-    Problem:
-        Given a dictionary list find words that match the dictionary and return true if found
-        Catch:
-            A '.' character might be in the word to match indicating to ignore the current character
-    Possible Solution:
-        trie tree:
-        Create a trie tree where every node is a character that points to the next character in the word then find the words that matches.
-        http://www.geeksforgeeks.org/overview-of-data-structures-set-3-graph-trie-segment-tree-and-suffix-tree/#code10
     Possible Second Solution:
     	Suffix Tree.
 */
 class searchTrie {
 	public static void main (String[] args) {
-		String[] dic = {"hello", "chop", "cat", "help", "dog", "fish"}; 
-		String[] tests = {"", "cha", "cat", "dog", "dooog", "d", "c.t" , "do." };
-		Trie trie = new Trie();
-		Arrays.stream(dic).forEach(w -> {
-	    		trie.insertWord(w, null);
-		});
+	    String[] dic = {"hello", "chop", "cat", "help", "dog", "fish"}; 
+	    String[] tests = {"", "cha", "cat", "dog", "dooog", "d", "c.t" , "do." };
+	    Trie trie = new Trie();
+	    Arrays.stream(dic).forEach(w -> {
+	        trie.insertWord(w, null);
+	    });
     
-    		Arrays.stream(tests).forEach(w -> {
-        		System.out.print("Testing word: \"" + w + "\"   ");
-        		System.out.println(trie.searchWord(w));
-    		});  
+        Arrays.stream(tests).forEach(w -> {
+            System.out.print("Testing word: \"" + w + "\"   ");
+            System.out.println(trie.searchWord(w));
+        });  
     
-        	trie.buildSuffix();
-        	trie.DPS();
+        // trie.buildSuffix();
+        // trie.DPS();
 	}
 }
 
@@ -121,14 +109,12 @@ class Trie{
             
     }
     public boolean searchWord(String w) {
-        if (root.suffix)
-            return searchWordUtilS(w, root);
+        // if (root.suffix)
+        //     return searchWordUtilS(w, root);
         return searchWordUtil(w, root);
     }
     
-    public boolean searchWordUtilS(String w, Node child) {
-        
-    }
+ 
     public boolean searchWordUtil(String w, Node child){
         if (w.isEmpty()){
             if (child.leaf)
