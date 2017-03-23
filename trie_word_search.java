@@ -60,6 +60,49 @@ class Trie{
         }
         
     }
+	
+public void buildSuffix(){
+        suffixTree = suffixTree(root);
+    }
+    public Node suffixTree(Node n){
+        // System.out.println(n.i);
+       if (n.set.isEmpty()) {
+            n.suffix = String.valueOf(n.i);
+            return n;
+        }
+        List remove = new LinkedList();
+        Iterator i = n.set.keySet().iterator();
+        while(i.hasNext()) {
+            char k = (Character) i.next();
+            Node current = n.set.get(k);
+            Node nxt = suffixTree(current);
+          
+            if (nxt.set.isEmpty()) {
+                n.suffix += nxt.suffix;
+                remove.add(nxt.i);
+            }
+            
+        }
+        
+        // java does not allow to remove elements inside the loop
+        remove.stream().forEach(k -> {
+            n.set.remove(k);
+        });
+        
+         System.out.println(n.suffix);
+        return n;
+    }
+    public void DPS(){
+        DPSUtil(root);
+    }
+    
+    public void DPSUtil(Node n){
+        System.out.print(n.i);
+        n.set.forEach((k, v) -> {
+            DPSUtil(v);
+        });
+            
+    }
     
     public boolean searchWord(String w){
         return searchWordUtil(w, root);
