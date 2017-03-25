@@ -16,22 +16,22 @@ import java.util.*;
 */
 class searchTrie {
 	public static void main (String[] args) {
-	    String[] dic = {"hello", "chop", "cat", "help", "dog", "fish"}; 
-	    String[] tests = {"", "cha", "cat", "dog", "dooog", "d", "c.t" , "do." };
+	    String[] dic = {"hello", "chop", "cat", "help", "dog", "dogs", "fish"}; 
+	    String[] tests = {"y", "cha", "cat", "dog", "dogs", "d" , "dooog", "d", "c.t" , "do.s", "hhmh", "aoo", "helo", "hel" , "elp" , "fi" , "fish" , "sgod", "fishes", "paoo" };
 	    Trie trie = new Trie();
 	    Arrays.stream(dic).forEach(w -> {
 	        trie.insertWord(w, null);
 	    });
     
         // Uncomment the line below to run the suffix Search instead
-        // trie.buildSuffix();
+        trie.buildSuffix();
         
         Arrays.stream(tests).forEach(w -> {
             System.out.print("Testing word: \"" + w + "\"   ");
             System.out.println(trie.searchWord(w));
         });  
     
-        // trie.DPS();
+        trie.DPS();
 	}
 }
 
@@ -66,7 +66,7 @@ class Trie{
         } else if (w.isEmpty()) {
             child.leaf = true;
         } else {
-            String c = String.valueOf(w.charAt(0));
+            String c = w.substring(0, 1);
             if (child.set.containsKey(c)){
                 insertWord(w.substring(1), child.set.get(c));
             } else {
@@ -91,15 +91,10 @@ class Trie{
             Node c = n.set.get(k);
             suffixTree(n, c);
         }
-        if (p.set.size() == 1){
-            if (n.leaf==true){
-                p.i += n.i;
-                p.set.clear();
-                p.leaf = true;
-            } else if (!n.set.isEmpty()) {
-                p.i += n.i;
-                p.set = n.set;
-            }
+        if (p.set.size() == 1 && !p.leaf){
+            p.set = n.set;
+            p.leaf = n.leaf && true;
+            p.i += n.i;
             
         }
     }
@@ -134,31 +129,30 @@ class Trie{
         String pref = w.substring(0, l);
         String suff = w.substring(l);
         if (compare(pref, n.i)) {
-            if (suff.isEmpty()) {
-                if (n.leaf)
-                    return true;
-                return false;
-            }
+            if (suff.isEmpty()) 
+                return n.leaf;
+            
             String k = suff.substring(0, 1);
             Node c = n.set.get(k); 
-            if (c == null && k.compareTo(".") == 0) {
-                return n.set.values().stream().anyMatch(v -> {
-                    return searchWordUtilS(w.substring(1), v);  
-                });
-            } else 
+            if (c == null) {
+                if (k.compareTo(".") == 0) {
+                    return n.set.values().stream().anyMatch(v -> {
+                        return searchWordUtilS(w.substring(1), v);  
+                    });
+                }
+            } else {
                 return searchWordUtilS(suff, c);
+            }
         }
         return false;
     }
   
     // search a word in the triee tree
     public boolean searchWordUtil(String w, Node child){
-        if (w.isEmpty()){
-            if (child.leaf)
-                return true;
-            return false;
-        }
-        String c = String.valueOf(w.charAt(0));
+        if (w.isEmpty())
+            return child.leaf;
+    
+        String c = w.substring(0, 1);
         Node n = child.set.get(c);
         if (n == null) {
             if (c.compareTo(".") == 0){
