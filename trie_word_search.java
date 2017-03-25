@@ -82,6 +82,7 @@ class Trie{
         suffixTree(root, root);
     }
     
+    // creates suffix Tree with the first character of the suffix as node key.
     public void suffixTree(Node p, Node n) {
         Iterator i = n.set.keySet().iterator();
         while (i.hasNext()){
@@ -102,10 +103,12 @@ class Trie{
         }
     }
    
+    // depth first search the tree;
     public void DPS(){
         DPSUtil(root);
     }
-    
+	
+    // depth first search util
     public void DPSUtil(Node n){
         System.out.println(n.i);
         n.set.forEach((k, v) -> {
@@ -113,12 +116,16 @@ class Trie{
         });
             
     }
+    // searchs a word in the tree
+    // if the tree is a suffix tree using searchWordUtilS
+    // otherwise uses searchWordUtil
     public boolean searchWord(String w) {
         if (root.suffix)
             return searchWordUtilS(w, root);
         return searchWordUtil(w, root);
     }
     
+    // searchs a word in the suffix tree
     public boolean searchWordUtilS(String w, Node n){
         int l = n.i.length();
         if (w.length() < l)
@@ -142,18 +149,8 @@ class Trie{
         }
         return false;
     }
-    
-    public boolean compare(String w, String n){
-        for (int i = 0; i < w.length(); i++){
-            if (w.charAt(i) == '.'){
-                // System.out.print("skip");
-            } else if (w.charAt(i) != n.charAt(i)){
-                return false;
-            }
-        }
-        return true;
-    }
- 
+  
+    // search a word in the triee tree
     public boolean searchWordUtil(String w, Node child){
         if (w.isEmpty()){
             if (child.leaf)
@@ -172,6 +169,18 @@ class Trie{
             return false; 
         }
         return searchWordUtil(w.substring(1), n);
+    }
+	
+    // compares two words ignoring "." character
+    public boolean compare(String w, String n){
+        for (int i = 0; i < w.length(); i++){
+            if (w.charAt(i) == '.'){
+                // System.out.print("skip");
+            } else if (w.charAt(i) != n.charAt(i)){
+                return false;
+            }
+        }
+        return true;
     }
     
 }
