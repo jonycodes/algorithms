@@ -93,7 +93,7 @@ class Trie{
         }
         if (p.set.size() == 1 && !p.leaf){
             p.set = n.set;
-            p.leaf = n.leaf && true;
+            p.leaf = n.leaf;
             p.i += n.i;
         }
     }
