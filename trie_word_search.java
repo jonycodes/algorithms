@@ -24,8 +24,8 @@ class searchTrie {
 	        trie.insertWord(w, null);
 	    });
     
-      
-        trie.buildSuffix();
+        // Uncomment the line below to run the suffix Search instead
+        // trie.buildSuffix();
         
         Arrays.stream(tests).forEach(w -> {
             System.out.print("Testing word: \"" + w + "\"   ");
