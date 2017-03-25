@@ -95,7 +95,6 @@ class Trie{
             p.set = n.set;
             p.leaf = n.leaf && true;
             p.i += n.i;
-            
         }
     }
    
@@ -110,7 +109,6 @@ class Trie{
         n.set.forEach((k, v) -> {
             DPSUtil(v);
         });
-            
     }
     // searchs a word in the tree
     // if the tree is a suffix tree using searchWordUtilS
