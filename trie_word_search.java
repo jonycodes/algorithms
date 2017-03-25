@@ -60,6 +60,8 @@ class Trie{
     public Trie(){
         root = new Node("");
     }
+	
+    // inserts word into the tree
     public void insertWord(String w, Node child){
         if (child == null) {
             insertWord(w, root);
@@ -74,10 +76,10 @@ class Trie{
                 child.set.put(c, n);
                 insertWord(w.substring(1), n);
             }
-        }
-        
+        }    
     }
     
+    // calls the build suffix tree method
     public void buildSuffix(){
         root.suffix = true;
         suffixTree(root, root);
