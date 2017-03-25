@@ -13,7 +13,8 @@ import java.util.*;
     Solution 2 (less run time efficiency, better space efficiency):
     	Suffix Tree.
     	Modify the code to build a suffic tree from the trie and create a new search word method that does linear comparison on each node
-    	
+    	Todo:
+    		Change the suffix tree node keys to the whole suffix to avoid using linear search at every node and only when a "." character is encoutered
 */
 class searchTrie {
 	public static void main (String[] args) {
