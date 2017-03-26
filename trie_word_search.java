@@ -21,11 +21,11 @@ import java.util.*;
 */
 class searchTrie {
     public static void main (String[] args) {
-        String[] dic = {"hello", "chop", "cat", "help", "dog", "dogs", "fish"}; 
-	String[] tests = {"y", "cha", "cat", "dog", "dogs", "d" , "dooog", "d", "c.t" , "do.s", "hhmh", "aoo", "helo", "hel" , "elp" , "fi" , "fish" , "sgod", "fishes", "paoo" };
+	String[] dic = {"hello", "chop", "cat", "help", "dog", "dogs", "fish"}; 
+	String[] tests = {"", "cha", "cat", "dog", "hel.", "dogs", "d" ,".ogs" ,"dooog", "c.t" , "do.s", "hhmh", "c..p", "helo", "hel" , "elp" , "fi" , "fish", "fishes" };
 	Trie trie = new Trie();
 	Arrays.stream(dic).forEach(w -> {
-	   trie.insertWord(w, null);
+	    trie.insertWord(w, null);
 	});
     
         // Comment the line below to run the normal Trie Search and uncomment to run Suffix Search
@@ -132,46 +132,51 @@ class Trie{
     // if the match is successful then search the rest of the word suffix down the tree until the string is empty
     // once the string is empty return true if the node is a leaf
     public boolean searchWordUtilS(String w, Node n){
+        if (n == null)
+            return false;
+            
         int l = n.i.length();
+        
         if (w.length() < l)
             return false;
+            
         String pref = w.substring(0, l);
         String suff = w.substring(l);
+        
         if (compare(pref, n.i)) {
             if (suff.isEmpty()) 
                 return n.isLeaf;
-            
+                
             String k = suff.substring(0, 1);
-            Node c = n.children.get(k); 
-            if (c == null) {
-                if (k.compareTo(".") == 0) {
-                    return n.children.values().stream().anyMatch(v -> {
-                        return searchWordUtilS(w.substring(1), v);  
-                    });
-                }
-            } else {
-                return searchWordUtilS(suff, c);
+            if (k.compareTo(".") == 0) {
+                return n.children.values().stream().anyMatch(v -> {
+                    return searchWordUtilS(suff, v);  
+                });
             }
+            Node c = n.children.get(k); 
+            return searchWordUtilS(suff, c);
         }
         return false;
     }
   
     // search a word in the triee tree
+    // at each node strip the first character of the word and look for it in the children HashMap
+    // if no node is found and the character is a "." then run the search with the suffix in every children node
     public boolean searchWordUtil(String w, Node n){
+        if (n == null)
+            return false;
+            
         if (w.isEmpty())
             return n.isLeaf;
     
         String c = w.substring(0, 1);
-        Node nxt = n.children.get(c);
-        if (nxt == null) {
-            if (c.compareTo(".") == 0){
-                return n.children.values().stream().anyMatch(v -> {
-                   return searchWordUtil(w.substring(1), v); 
-                });
-            }
-            return false; 
+        if (c.compareTo(".") == 0){
+            return n.children.values().stream().anyMatch(v -> {
+                return searchWordUtil(w.substring(1), v); 
+            });
         }
-        return searchWordUtil(w.substring(1), nxt);
+
+        return searchWordUtil(w.substring(1),  n.children.get(c));
     }
 	
     // compares two words ignoring "." character
