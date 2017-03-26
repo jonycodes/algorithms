@@ -169,14 +169,14 @@ class Trie{
         if (w.isEmpty())
             return n.isLeaf;
     
-        String c = w.substring(0, 1);
-        if (c.compareTo(".") == 0){
+        String k = w.substring(0, 1);
+        if (k.compareTo(".") == 0){
             return n.children.values().stream().anyMatch(v -> {
                 return searchWordUtil(w.substring(1), v); 
             });
         }
 
-        return searchWordUtil(w.substring(1),  n.children.get(c));
+        return searchWordUtil(w.substring(1),  n.children.get(k));
     }
 	
     // compares two words ignoring "." character
