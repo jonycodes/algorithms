@@ -5,25 +5,30 @@ import java.util.*;
         Given a dictionary list find words that match the dictionary and return true if found
         Catch:
             A '.' character might be in the word to match indicating to ignore the current character
-    Solution 1:
-        trie tree:
+    
+    Solution 1 - Trie tree:
         Create a trie tree where every node is a character that points to the next character in the word then find the words that matches.
         http://www.geeksforgeeks.org/overview-of-data-structures-set-3-graph-trie-segment-tree-and-suffix-tree/#code10
-    
-    Solution 2 (less run time efficiency, better space efficiency):
-    	Suffix Tree.
-    	Modify the code to build a suffic tree from the trie and create a new search word method that does linear comparison on each node
+        Time complexity: (M log n)
+        Space: O (Alphabet_size * m * n)
+        
+    Solution 2 - Suffix Tree (Much better space efficiency):
+        Modify the code to build a suffic tree from the trie and create a new search word method that does linear comparison on each node
+    	complexity still (m log n) 
+    	Space: O(n)
+    	
+    Solution 3 - Suffix Array (Pending) 
 */
 class searchTrie {
-	public static void main (String[] args) {
-	    String[] dic = {"hello", "chop", "cat", "help", "dog", "dogs", "fish"}; 
-	    String[] tests = {"y", "cha", "cat", "dog", "dogs", "d" , "dooog", "d", "c.t" , "do.s", "hhmh", "aoo", "helo", "hel" , "elp" , "fi" , "fish" , "sgod", "fishes", "paoo" };
-	    Trie trie = new Trie();
-	    Arrays.stream(dic).forEach(w -> {
-	        trie.insertWord(w, null);
-	    });
+    public static void main (String[] args) {
+        String[] dic = {"hello", "chop", "cat", "help", "dog", "dogs", "fish"}; 
+	String[] tests = {"y", "cha", "cat", "dog", "dogs", "d" , "dooog", "d", "c.t" , "do.s", "hhmh", "aoo", "helo", "hel" , "elp" , "fi" , "fish" , "sgod", "fishes", "paoo" };
+	Trie trie = new Trie();
+	Arrays.stream(dic).forEach(w -> {
+	   trie.insertWord(w, null);
+	});
     
-        // Uncomment the line below to run the suffix Search instead
+        // Comment the line below to run the normal Trie Search and uncomment to run Suffix Search
         trie.buildSuffix();
         
         Arrays.stream(tests).forEach(w -> {
@@ -32,21 +37,20 @@ class searchTrie {
         });  
     
         trie.DPS();
-	}
+    }
 }
 
 class Node {
     String i;
-    public boolean leaf;
-    public boolean suffix;
-    public HashMap<String, Node> set; 
+    boolean isLeaf;
+    boolean suffix;
+    HashMap<String, Node> children; 
 
     
     public Node(String s){
         i = s;
-        set = new HashMap<String, Node>();
-        leaf = false;
-        suffix = false;
+        children = new HashMap<String, Node>();
+        isLeaf = false;
     }
 }
 
@@ -54,51 +58,53 @@ class Node {
 class Trie{
     Node root;
     Node suffixTree;
+    boolean suffix;
     
     public Trie(){
         root = new Node("");
+        suffix = false;
     }
 	
     // inserts word into the tree
-    public void insertWord(String w, Node child){
-        if (child == null) {
+    public void insertWord(String w, Node n){
+        if (n == null) {
             insertWord(w, root);
         } else if (w.isEmpty()) {
-            child.leaf = true;
+            n.isLeaf = true;
         } else {
             String c = w.substring(0, 1);
-            if (child.set.containsKey(c)){
-                insertWord(w.substring(1), child.set.get(c));
+            if (n.children.containsKey(c)){
+                insertWord(w.substring(1), n.children.get(c));
             } else {
-                Node n = new Node(c);
-                child.set.put(c, n);
-                insertWord(w.substring(1), n);
+                Node nw = new Node(c);
+                n.children.put(c, nw);
+                insertWord(w.substring(1), nw);
             }
         }    
     }
     
-    // calls the build suffix tree method
+    // calls the suffix tree method
     public void buildSuffix(){
-        root.suffix = true;
+        suffix = true;
         suffixTree(root, root);
     }
     
     // creates suffix Tree with the first character of the suffix as node key.
     public void suffixTree(Node p, Node n) {
-        Iterator i = n.set.keySet().iterator();
+        Iterator i = n.children.keySet().iterator();
         while (i.hasNext()){
             String k = (String) i.next();
-            Node c = n.set.get(k);
+            Node c = n.children.get(k);
             suffixTree(n, c);
         }
-        if (p.set.size() == 1 && !p.leaf){
-            p.set = n.set;
-            p.leaf = n.leaf;
+        if (p.children.size() == 1 && !p.isLeaf){
+            p.children = n.children;
+            p.isLeaf = n.isLeaf;
             p.i += n.i;
         }
     }
    
-    // depth first search the tree;
+    // depth first search
     public void DPS(){
         DPSUtil(root);
     }
@@ -106,20 +112,25 @@ class Trie{
     // depth first search util
     public void DPSUtil(Node n){
         System.out.println(n.i);
-        n.set.forEach((k, v) -> {
+        n.children.forEach((k, v) -> {
             DPSUtil(v);
         });
     }
+    
     // searchs a word in the tree
-    // if the tree is a suffix tree using searchWordUtilS
-    // otherwise uses searchWordUtil
+    // if the tree is a suffix tree uses searchWordUtilS (suffix search)
+    // otherwise uses searchWordUtil (trie search)
     public boolean searchWord(String w) {
-        if (root.suffix)
+        if (suffix)
             return searchWordUtilS(w, root);
         return searchWordUtil(w, root);
     }
     
     // searchs a word in the suffix tree
+    // almost the same a trie search
+    // except it does a linear comparison at each node to match the word prefix with the node's string
+    // if the match is successful then search the rest of the word suffix down the tree until the string is empty
+    // once the string is empty return true if the node is a leaf
     public boolean searchWordUtilS(String w, Node n){
         int l = n.i.length();
         if (w.length() < l)
@@ -128,13 +139,13 @@ class Trie{
         String suff = w.substring(l);
         if (compare(pref, n.i)) {
             if (suff.isEmpty()) 
-                return n.leaf;
+                return n.isLeaf;
             
             String k = suff.substring(0, 1);
-            Node c = n.set.get(k); 
+            Node c = n.children.get(k); 
             if (c == null) {
                 if (k.compareTo(".") == 0) {
-                    return n.set.values().stream().anyMatch(v -> {
+                    return n.children.values().stream().anyMatch(v -> {
                         return searchWordUtilS(w.substring(1), v);  
                     });
                 }
@@ -146,30 +157,28 @@ class Trie{
     }
   
     // search a word in the triee tree
-    public boolean searchWordUtil(String w, Node child){
+    public boolean searchWordUtil(String w, Node n){
         if (w.isEmpty())
-            return child.leaf;
+            return n.isLeaf;
     
         String c = w.substring(0, 1);
-        Node n = child.set.get(c);
-        if (n == null) {
+        Node nxt = n.children.get(c);
+        if (nxt == null) {
             if (c.compareTo(".") == 0){
-                return child.set.values().stream().anyMatch(v -> {
+                return n.children.values().stream().anyMatch(v -> {
                    return searchWordUtil(w.substring(1), v); 
                 });
-                
             }
             return false; 
         }
-        return searchWordUtil(w.substring(1), n);
+        return searchWordUtil(w.substring(1), nxt);
     }
 	
     // compares two words ignoring "." character
     public boolean compare(String w, String n){
         for (int i = 0; i < w.length(); i++){
-            if (w.charAt(i) == '.'){
-                // System.out.print("skip");
-            } else if (w.charAt(i) != n.charAt(i)){
+            if (w.charAt(i) == '.'){} 
+            else if (w.charAt(i) != n.charAt(i)){
                 return false;
             }
         }
