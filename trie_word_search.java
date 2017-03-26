@@ -72,12 +72,12 @@ class Trie{
         } else if (w.isEmpty()) {
             n.isLeaf = true;
         } else {
-            String c = w.substring(0, 1);
-            if (n.children.containsKey(c)){
-                insertWord(w.substring(1), n.children.get(c));
+            String k = w.substring(0, 1);
+            if (n.children.containsKey(k)){
+                insertWord(w.substring(1), n.children.get(k));
             } else {
-                Node nw = new Node(c);
-                n.children.put(c, nw);
+                Node nw = new Node(k);
+                n.children.put(k, nw);
                 insertWord(w.substring(1), nw);
             }
         }    
